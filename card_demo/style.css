@@ -1,0 +1,70 @@
+/* 页面整体使用 Flex 居中 */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* 满屏高度 */
+  margin: 0;
+  background-color: #f7f4ef;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* 名片卡片容器 */
+.card {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  height: 500px;
+  align-items: center;
+  max-width: 400px;
+  padding: 40px 24px;
+  color: #111827;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+/* 头像 */
+.avatar {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 24px;
+}
+
+/* 姓名 */
+#name {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+/* 职位 */
+#job {
+  font-size: 18px;
+  color: #6b7280;
+  margin-bottom: 32px;
+}
+
+/* 联系方式 */
+.contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  font-size: 16px;
+  width: 100%;
+}
+
+.contact p {
+  display: flex;
+  align-items: center;
+  color: #111827;
+  margin: 10px;
+}
+
+.icon {
+  width: 24px;
+  font-size: 20px;
+  margin-right: 12px;
+}
