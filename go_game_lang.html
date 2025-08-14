@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>围棋术语中英对照 · Glossary</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #111826;
+      --muted: #8aa0b2;
+      --text: #e6edf3;
+      --accent: #4ea5ff;
+      --accent-2: #7c4dff;
+      --chip: #1d2737;
+      --border: #213045;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", "Hiragino Sans GB", sans-serif;
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(124,77,255,.25), transparent 60%),
+                  radial-gradient(1000px 700px at 10% -20%, rgba(78,165,255,.18), transparent 60%), var(--bg);
+      color: var(--text);
+    }
+    header {
+      position: sticky; top: 0; z-index: 9;
+      background: linear-gradient(180deg, rgba(11,15,20,.95), rgba(11,15,20,.7));
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 20px; }
+    .title { display:flex; align-items:center; gap:14px; }
+    .logo {
+      width: 44px; height: 44px; border-radius: 12px; display:grid; place-items:center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 30px rgba(78,165,255,.25);
+      font-weight: 800; color: white;
+    }
+    .title h1 { margin: 0; font-size: 22px; letter-spacing: .2px; }
+    .toolbar { display:flex; flex-wrap: wrap; gap:12px; margin-top: 14px; }
+    .search {
+      flex: 1 1 360px; display:flex; align-items:center; gap:10px; padding: 12px 14px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    }
+    .search input {
+      flex:1; background: transparent; border: none; color: var(--text); outline: none; font-size: 15px;
+    }
+    .chip {
+      background: var(--chip); color: var(--muted); border: 1px solid var(--border);
+      padding: 10px 12px; border-radius: 12px; cursor: pointer; user-select: none; font-size: 13px;
+    }
+    .chip.active { color: var(--text); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(78,165,255,.15) inset; }
+    .btn {
+      padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border);
+      background: linear-gradient(180deg, #182132, #121a28); color: var(--text);
+      cursor: pointer; font-size: 14px;
+    }
+    .stats { color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+    .grid { margin-top: 18px; display:grid; grid-template-columns: 1fr; gap: 12px; }
+    @media (min-width: 760px) { .grid { grid-template-columns: 1fr 1fr; } }
+    .card {
+      border: 1px solid var(--border); border-radius: 14px; background: rgba(17,24,38,.75);
+      padding: 14px 14px; display:flex; align-items: flex-start; gap: 12px;
+      transition: transform .12s ease, box-shadow .12s ease, border-color .12s ease;
+    }
+    .card:hover { transform: translateY(-1px); border-color: #34507a; box-shadow: 0 10px 20px rgba(0,0,0,.2); }
+
+    .tag { font-size: 12px; color: var(--muted); }
+    .cn { font-weight: 600; font-size: 16px; }
+    .en { font-size: 14px; color: #cfe1f5; }
+
+    .alpha { display:flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
+    .alpha a { color: var(--muted); text-decoration: none; padding: 6px 8px; border-radius: 8px; border: 1px solid transparent; }
+    .alpha a:hover { color: var(--text); border-color: var(--border); background: var(--chip); }
+
+    footer { color: var(--muted); font-size: 12px; padding: 32px 0 56px; }
+    mark { background: rgba(78,165,255,.18); color: var(--text); padding: 0 .2em; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="title">
+        <div class="logo">围</div>
+        <h1>围棋术语 · 中英对照 Glossary</h1>
+      </div>
+      <div class="toolbar">
+        <div class="search">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M21 21l-4.3-4.3" stroke="#8aa0b2" stroke-width="2" stroke-linecap="round"/><circle cx="11" cy="11" r="7" stroke="#8aa0b2" stroke-width="2"/></svg>
+          <input id="q" placeholder="搜索中文或英文… (支持拼音/部分匹配)" />
+        </div>
+        <div class="chip" id="toggle-cn">显示中文 ✓</div>
+        <div class="chip active" id="toggle-en">显示英文 ✓</div>
+        <button class="btn" id="btn-export">导出 CSV</button>
+      </div>
+      <div class="alpha" id="alpha"></div>
+      <div class="stats" id="stats"></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="grid" id="list"></section>
+    <footer>
+      本页根据您提供的原始术语列表自动<strong>清理行尾非英文字符</strong>（如 *、奇怪空白、标点混入等），并去重展示。若想修正翻译或补充术语，直接在聊天里给我增删改即可，我会为您重新生成页面。
+    </footer>
+  </main>
+
+  <script>
+  // === Paste the original raw text exactly as provided ===
+  const raw = `
+* 安定  -settle*
+* ﻿﻿白- white*
+* ﻿﻿白方- white_ player*
+* ﻿﻿败- failure*
+* ﻿﻿败着- losing move
+* ﻿﻿半劫 ban jie- half-point
+* ﻿﻿包围 - surround*
+* ﻿﻿薄- thin*
+* ﻿﻿保留  - retain; preserve*
+* ﻿﻿本身劫材  - Local ko threat
+* ﻿﻿本手 - proper move
+* ﻿﻿笨重  - heayy*
+* ﻿﻿崩溃- collapse*
+* ﻿比气- Counting/comparing liberties 
+* ﻿﻿比赛- tournament*
+* ﻿﻿边- Side*
+* ﻿﻿变化- variation*
+* ﻿﻿中国流- chinese. opening
+* ﻿﻿变着 -unusual play
+* ﻿并- horizontal stretch
+* ﻿补强- reinforce*
+* ﻿布局- opening
+* ﻿﻿不利 -disadvantageous*
+* ﻿﻿猜先-guessing the stones （random color choice before the game
+* ﻿﻿参考- reference*
+* ﻿﻿残忍 - bloody or merciless*
+* ﻿﻿拆  - extension
+* ﻿﻿拆二 - two-space_extension
+* ﻿﻿拆三- three-space extension
+* ﻿﻿拆五 - five-space extension
+* ﻿缠绕-harassment technique
+* ﻿长 - stretch
+* ﻿﻿长考-think for a long time
+* ﻿﻿长气- increase liberties
+* ﻿﻿超大飞- very large knight's move
+* ﻿﻿超高目 - 4-6 point
+* ﻿﻿超时负- lose by time
+* ﻿﻿超时胜 - win on time
+* ﻿﻿成功- success*
+* ﻿﻿成立- possible*
+* ﻿﻿吃住- capture 
+* ﻿﻿吃亏 - loss*
+* ﻿冲- push through
+* ﻿﻿重复- overconcentrated
+* ﻿﻿初段 -1dan
+* ﻿﻿初级- beginner level*
+* ﻿﻿开局无劫- there are no ko threats in the Opening
+* ﻿﻿出头- getting ahead
+* ﻿刺 -peep
+* ﻿﻿次序 - sequence*
+* ﻿﻿错误-mistake*
+* ﻿﻿搭-attach
+* ﻿﻿打 吃- atari
+* ﻿﻿打二还一 -capture two recapture one
+* ﻿﻿打劫 - ko
+* ﻿﻿打入 - invasion
+* ﻿大龙- dragon*
+* ﻿大模样- large-scale framework
+* ﻿大盘- large board （19x19）
+* ﻿﻿大伸腿 - large monkey jump
+* ﻿大头鬼- two-stone.edge.squeeze
+* ﻿﻿大雪崩 - Large avalanche
+* ﻿大眼 - eye with two or more spaces
+* ﻿﻿单关 -one-space jump
+* ﻿单官 -neutral point
+* ﻿单劫- half-point ko
+* ﻿﻿挡- block*
+* ﻿﻿刀把五 dao ba wu -bulky five
+* ﻿﻿倒扑- snapback
+* ﻿低di-low*
+* ﻿﻿敌人- enemy*
+* ﻿﻿抵抗- to resist; resistance*
+* ﻿﻿地盘- territory*
+* ﻿﻿点- point
+* ﻿﻿点角- corner invasion
+* ﻿﻿点目- counting
+* ﻿﻿丁四- farmer's hat; pyramid four
+* ﻿﻿定式 - joseki
+* ﻿﻿定型 - settle
+* ﻿﻿低中国流 - Low Chinese_opening
+* ﻿﻿渡- bridge under
+* ﻿﻿断- cut*
+* ﻿﻿对局- play game*
+* ﻿对杀-capturing race
+* ﻿﻿恶手 - bad move
+* ﻿﻿二间拆- two-space extension
+* ﻿﻿二间跳 -two-space jump
+* ﻿﻿发展-develop
+* ﻿﻿反打- counter atari
+* ﻿﻿反攻 -counter attack
+* ﻿﻿反击-counter attack
+* ﻿﻿反夹- counter pincer
+* ﻿方法 - technique*
+* ﻿﻿方四- square four
+* ﻿﻿方向 - direction
+* ﻿﻿防守 -defend*
+* ﻿﻿飞 - knight's move
+* ﻿飞挂- knight's move approach
+* ﻿飞压- press
+* ﻿﻿废着-useless move
+* ﻿﻿废子-useless stones
+* ﻿﻿分投- splitting move
+* ﻿﻿封锁 - seal in*
+* ﻿﻿浮子- floating stones
+* ﻿﻿复盘- game review
+* ﻿﻿概念 -concept*
+* ﻿感觉- feeling*
+* ﻿高- high*
+* ﻿高级- advanced level*
+* ﻿﻿高目 gao mu- 4-5_point
+* ﻿﻿攻击-attack*
+* ﻿﻿共气- shared liberty.
+* ﻿﻿共活 gong huo- seki
+* ﻿﻿孤棋 gu qi - floating stones
+* ﻿﻿挂角- corner approach- kakari
+* ﻿﻿孤棋 gu qi - floating stones
+* ﻿﻿挂角-corner approach
+* ﻿﻿怪着- ghost move
+* ﻿﻿官子 -endgame
+* ﻿﻿龟甲- tortoise shell
+* ﻿﻿规则-rules*
+* ﻿﻿滚打包收-squeeze
+* ﻿﻿过分- overplay.
+* ﻿﻿好点- good point
+* ﻿﻿和棋 -draw*
+* ﻿﻿黑- black*
+* ﻿﻿黑方- black player*
+* ﻿﻿黑先- Black plays first*
+* ﻿﻿厚 - thick*
+* ﻿﻿后悔-regret*
+* ﻿﻿后面推车-pushing from behind
+* ﻿﻿厚实- thick*
+* ﻿﻿厚势- influence*
+* ﻿﻿虎- tiger's mouth
+* ﻿﻿互破- mutual damage
+* ﻿﻿互围- mutual surrounding of territory
+* ﻿﻿坏形- bad shape
+* ﻿﻿还原- transposition
+* ﻿缓-slow*
+* ﻿﻿好点- good point
+* ﻿﻿急所- urgent point
+* ﻿﻿技巧  -technique*
+* ﻿﻿枷 -net
+* ﻿﻿夹攻 - pincer
+* ﻿假眼 -false eye.
+* ﻿﻿尖冲- shoulder hit
+* ﻿﻿坚实-solid
+* ﻿﻿见合-miai
+* ﻿交叉点- point
+* ﻿﻿交换-exchange*
+* ﻿﻿角 -corner 
+* ﻿﻿金角银边草肚皮 - Corner is gold, side is silver，center Is grass
+* ﻿﻿接不归-connect and die
+* ﻿﻿劫jie-ko
+* ﻿﻿劫材 -ko threat
+* ﻿结果- result*
+* ﻿﻿劫活- live by ko
+* ﻿﻿47* (jiẽ dá) - answer, solution*
+* ﻿﻿金鸡独立 Golden Chicken Standing on One Leg
+* ﻿﻿紧-tight*
+* 开局- opening
+* ﻿﻿连接 -connect*
+* ﻿﻿满意 satisfied*
+* ﻿﻿扭十字 -crosscut
+* ﻿﻿扭羊头-ladder
+* ﻿爬-crawl
+* ﻿﻿便宜  -profit*
+* ﻿﻿骗着-trick play,
+* ﻿平衡 - balance*
+* ﻿﻿破- break
+* ﻿﻿棋盘- go board
+* ﻿﻿棋风- playing style.
+* ﻿﻿棋盒 - stone container
+* ﻿﻿棋筋 - key stones
+* ﻿﻿棋谱（棋譜）qi pu-game record
+* ﻿﻿棋石 qi shi-stone
+* ﻿﻿棋手 gi shou- player*
+* ﻿﻿棋书（棋書）qi shd-go book
+* ﻿﻿棋院 qi yuan-go institute
+* ﻿﻿棋形 qi xing-shape
+* ﻿﻿棋钟（棋鐘）qi zhong - clock*
+* ﻿﻿棋子 qizi- stone
+* ﻿﻿F (ER) qì - abandon, to discard, throw away
+* ﻿﻿弃子（棄子）qizi- sacritice
+* ﻿气（氣）qi-liberty.
+* ﻿﻿气合（氣合）qi he - fighting_spirit
+* ﻿﻿气紧（氣緊）qi jin - shortage of liberties
+* ﻿﻿前 - in front, before*
+* ﻿﻿浅消（淺消）qian xiao -erasure
+* ﻿﻿墙（牆）qiang-wall*
+* ﻿﻿强（強）qiang - strong
+* ﻿﻿墙壁（牆壁）qiang bi -wall*
+* ﻿﻿强棋（強棋）qiang qi - strong.group
+* ﻿﻿巧手 qiao shou - clever move
+* ﻿﻿巧着（巧著）qiao zhao- clever move
+* ﻿﻿切断（切斷）qie duan-cut*
+* ﻿﻿侵消 ain xiao - grasure
+* ﻿轻（輕）qing - light*
+* ﻿侵入 qin ru - invasion
+* ﻿﻿轻盈（輕盈）qing ying- light*
+* ﻿﻿求活 qiu huo -make life
+* ﻿曲qu- bend
+* ﻿﻿棋谱-game record
+* ﻿﻿棋石 -stone
+* ﻿﻿棋手 -player*
+* ﻿﻿棋书-go book
+* ﻿﻿棋院 qi yuan-go institute
+* ﻿﻿棋形 -shape
+* ﻿﻿棋钟- clock*
+* ﻿﻿棋子 -stone
+* ﻿﻿弃子- abandon, throw away
+* ﻿﻿弃子-sacritice
+* ﻿气-liberty.
+* ﻿﻿强 - strong
+* ﻿﻿墙壁-wall*
+* ﻿﻿强棋- strong.group
+* ﻿﻿巧着- clever move
+* ﻿侵入 - invasion
+* ﻿﻿轻盈- light*
+* ﻿﻿让子 - handicap
+* ﻿认输-resign*
+* ﻿﻿软头-soft head
+* ﻿﻿弱- weak*
+* ﻿﻿弱棋 - weak group.
+* ﻿﻿三三 - 3-3 point
+* 杀 -kill*
+* 胜- win*
+* ﻿﻿收官子 play endgame
+* ﻿﻿守角 - corner enclosure
+* ﻿﻿双吃 -double atari
+* ﻿﻿死活题- life and death problem
+* ﻿﻿死棋 - dead group
+* ﻿﻿死子- dead stone
+* ﻿﻿随手棋- hasty move
+* ﻿﻿逃跑 - escape*
+* ﻿弾性- flexibility*
+* ﻿跳-jump*
+* ﻿﻿退- pull back
+* 挖- wedge
+* ﻿﻿外气- outside liberty.
+* ﻿弯三- bent three
+* ﻿﻿弯四- bent four
+* ﻿﻿尾巴 - tail*
+* ﻿﻿細棋- close game
+* ﻿﻿陷阱 -a trap*
+* ﻿﻿小- small*
+* ﻿小飞- knight's move
+* 星 - star point
+* ﻿形勢- situation*
+* ﻿宇宙流 - cosmic style
+* ﻿﻿原则- principle
+* ﻿眼yan- eye*
+* ﻿要点- vital point
+* ﻿﻿真眼 - real eye
+* ﻿﻿征子 - ladder
+* ﻿﻿中腹  -center*
+* ﻿﻿追 - chase*
+* ﻿﻿自杀-suicide*
+* ﻿﻿做活 - make life
+`;
+
+  const allowEnd = /[A-Za-z0-9\s_\-–—\(\)\[\]\.,;:'/\\]+$/;
+  const stripTrail = s => {
+    if (!s) return s;
+    // Remove trailing characters that are not in the allowed ASCII-ish set
+    while (s && !allowEnd.test(s)) s = s.slice(0, -1);
+    // Also trim stray asterisks and unusual whitespace
+    return s.replace(/[\*\u200b\u200e\ufeff]+$/g, '').trim();
+  };
+
+  const lines = raw.split(/\n+/).map(l => l.replace(/^\*\s*/, '').trim()).filter(Boolean);
+  const entries = [];
+  const seen = new Set();
+
+  for (const line of lines) {
+    // find first hyphen that separates CN and EN
+    const idx = line.indexOf('-');
+    if (idx === -1) continue;
+    let cn = line.slice(0, idx).replace(/\s+/g, ' ').trim();
+    let en = line.slice(idx + 1).replace(/\s+/g, ' ').trim();
+    // Strip trailing non-English
+    en = stripTrail(en);
+    cn = cn.replace(/[\*]+$/g, '').trim();
+    // Remove accidental BOMs or special chars in CN
+    cn = cn.replace(/[\u200b\u200e\ufeff]/g, '').trim();
+    if (!cn || !en) continue;
+    const key = cn + '|' + en.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    entries.push({ cn, en });
+  }
+
+  // Simple pinyin support (very lightweight). We'll just lowercase ASCII of CN for contains.
+  const listEl = document.getElementById('list');
+  const qEl = document.getElementById('q');
+  const statsEl = document.getElementById('stats');
+  const alphaEl = document.getElementById('alpha');
+  const toggleCN = document.getElementById('toggle-cn');
+  const toggleEN = document.getElementById('toggle-en');
+  const btnExport = document.getElementById('btn-export');
+
+  let showCN = true;
+  let showEN = true;
+
+  function renderAlphaIndex() {
+    const letters = Array.from(new Set(entries.map(e => e.en[0]?.toUpperCase()).filter(ch => /[A-Z]/.test(ch)))).sort();
+    alphaEl.innerHTML = letters.map(l => `<a href="#" data-letter="${l}">${l}</a>`).join('');
+    alphaEl.onclick = (e) => {
+      const a = e.target.closest('a');
+      if (!a) return;
+      e.preventDefault();
+      const letter = a.dataset.letter;
+      const target = listEl.querySelector(`[data-letter='${letter}']`);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+  }
+
+  function highlight(text, q) {
+    if (!q) return text;
+    const safe = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return text.replace(new RegExp(safe, 'ig'), m => `<mark>${m}</mark>`);
+  }
+
+  function render(list) {
+    // sort by English then CN
+    list.sort((a,b) => a.en.localeCompare(b.en, 'en') || a.cn.localeCompare(b.cn, 'zh-Hans'));
+    listEl.innerHTML = '';
+    let currentLetter = '';
+    for (const item of list) {
+      const first = (item.en[0] || '').toUpperCase();
+      const letterChanged = /[A-Z]/.test(first) && first !== currentLetter;
+      if (letterChanged) {
+        currentLetter = first;
+      }
+      const anchorAttr = letterChanged ? `data-letter="${first}"` : '';
+      const cnHtml = showCN ? `<div class="cn">${highlight(item.cn, qEl.value)}</div>` : '';
+      const enHtml = showEN ? `<div class="en">${highlight(item.en, qEl.value)}</div>` : '';
+      const tagHtml = `<div class="tag">${/[A-Z]/.test(first) ? first : '#'} · 围棋术语</div>`;
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.setAttribute('tabindex', '0');
+      if (anchorAttr) card.setAttribute('data-letter', currentLetter);
+      card.innerHTML = `<div style="width:8px; height: 100%; border-radius: 6px; background: linear-gradient(180deg, var(--accent), var(--accent-2)); opacity:.6;"></div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          ${tagHtml}
+          ${cnHtml}
+          ${enHtml}
+        </div>`;
+      listEl.appendChild(card);
+    }
+    statsEl.textContent = `共 ${list.length} 条术语 · 已自动去重并清理行尾非英文字符`;
+  }
+
+  function applyFilter() {
+    const q = qEl.value.trim().toLowerCase();
+    if (!q) { render(entries.slice()); return; }
+    const filtered = entries.filter(e => e.cn.toLowerCase().includes(q) || e.en.toLowerCase().includes(q));
+    render(filtered);
+  }
+
+  qEl.addEventListener('input', applyFilter);
+
+  toggleCN.addEventListener('click', () => {
+    showCN = !showCN;
+    toggleCN.classList.toggle('active', showCN);
+    toggleCN.textContent = showCN ? '显示中文 ✓' : '显示中文 ✕';
+    applyFilter();
+  });
+  toggleEN.addEventListener('click', () => {
+    showEN = !showEN;
+    toggleEN.classList.toggle('active', showEN);
+    toggleEN.textContent = showEN ? '显示英文 ✓' : '显示英文 ✕';
+    applyFilter();
+  });
+
+  btnExport.addEventListener('click', () => {
+    const rows = [['中文', 'English']].concat(entries.map(e => [e.cn, e.en]));
+    const csv = rows.map(r => r.map(x => '"' + (x||'').replace(/"/g,'""') + '"').join(',')).join('\n');
+    const blob = new Blob(["\ufeff" + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'go-glossary.csv'; a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  renderAlphaIndex();
+  render(entries.slice());
+  </script>
+</body>
+</html>
